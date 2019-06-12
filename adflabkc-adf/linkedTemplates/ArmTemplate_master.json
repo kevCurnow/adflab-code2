@@ -1,0 +1,91 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "adflabkc-adf"
+		},
+		"AzStorage_Destination_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzStorage_Destination'"
+		},
+		"AzureBlobStorage_Source_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_Source'"
+		},
+		"Blob Destination Master FAA File_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "FAAmaster.txt"
+		},
+		"Blob Destination Master FAA File_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "input"
+		},
+		"Blob Master FAA File_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "FAAmaster.txt"
+		},
+		"Blob Master FAA File_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "input"
+		},
+		"HTTP_Weather_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas Token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzStorage_Destination_connectionString": {
+						"value": "[parameters('AzStorage_Destination_connectionString')]"
+					},
+					"AzureBlobStorage_Source_connectionString": {
+						"value": "[parameters('AzureBlobStorage_Source_connectionString')]"
+					},
+					"HTTP_Weather_properties_typeProperties_url": {
+						"value": "[parameters('HTTP_Weather_properties_typeProperties_url')]"
+					},
+					"Blob Destination Master FAA File_properties_typeProperties_fileName": {
+						"value": "[parameters('Blob Destination Master FAA File_properties_typeProperties_fileName')]"
+					},
+					"Blob Destination Master FAA File_properties_typeProperties_folderPath": {
+						"value": "[parameters('Blob Destination Master FAA File_properties_typeProperties_folderPath')]"
+					},
+					"Blob Master FAA File_properties_typeProperties_fileName": {
+						"value": "[parameters('Blob Master FAA File_properties_typeProperties_fileName')]"
+					},
+					"Blob Master FAA File_properties_typeProperties_folderPath": {
+						"value": "[parameters('Blob Master FAA File_properties_typeProperties_folderPath')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

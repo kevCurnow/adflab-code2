@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adflabkc-adf"
+		},
+		"AzStorage_Destination_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage_Source_connectionString": {
+			"value": ""
+		},
+		"Blob Destination Master FAA File_properties_typeProperties_fileName": {
+			"value": "FAAmaster.txt"
+		},
+		"Blob Destination Master FAA File_properties_typeProperties_folderPath": {
+			"value": "input"
+		},
+		"Blob Master FAA File_properties_typeProperties_fileName": {
+			"value": "FAAmaster.txt"
+		},
+		"Blob Master FAA File_properties_typeProperties_folderPath": {
+			"value": "input"
+		},
+		"HTTP_Weather_properties_typeProperties_url": {
+			"value": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
