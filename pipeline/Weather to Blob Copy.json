@@ -35,8 +35,70 @@
 							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false
-				}
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "_id"
+								},
+								"sink": {
+									"name": "_id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "date"
+								},
+								"sink": {
+									"name": "date",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "dateint"
+								},
+								"sink": {
+									"name": "dateint",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "airport"
+								},
+								"sink": {
+									"name": "airport",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "temp"
+								},
+								"sink": {
+									"name": "temp",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_bhz",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_bhz",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		]
 	},
