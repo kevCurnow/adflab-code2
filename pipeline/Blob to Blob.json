@@ -152,6 +152,10 @@
 					}
 				],
 				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Weather to Blob Copy",
+						"type": "PipelineReference"
+					},
 					"waitOnCompletion": true
 				}
 			}
