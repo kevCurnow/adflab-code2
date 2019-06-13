@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzStorage_Destination'"
 		},
+		"Azure DW DB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Azure DW DB'"
+		},
 		"AzureBlobStorage_Source_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_Source'"
@@ -64,6 +68,9 @@
 					},
 					"AzStorage_Destination_connectionString": {
 						"value": "[parameters('AzStorage_Destination_connectionString')]"
+					},
+					"Azure DW DB_connectionString": {
+						"value": "[parameters('Azure DW DB_connectionString')]"
 					},
 					"AzureBlobStorage_Source_connectionString": {
 						"value": "[parameters('AzureBlobStorage_Source_connectionString')]"

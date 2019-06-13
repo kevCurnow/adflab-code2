@@ -8,6 +8,9 @@
 		"AzStorage_Destination_connectionString": {
 			"value": ""
 		},
+		"Azure DW DB_connectionString": {
+			"value": ""
+		},
 		"AzureBlobStorage_Source_connectionString": {
 			"value": ""
 		},
