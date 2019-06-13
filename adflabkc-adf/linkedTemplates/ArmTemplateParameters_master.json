@@ -14,6 +14,9 @@
 		"AzureBlobStorage_Source_connectionString": {
 			"value": ""
 		},
+		"Azure ODS DB_connectionString": {
+			"value": ""
+		},
 		"Blob Destination Master FAA File_properties_typeProperties_fileName": {
 			"value": "FAAmaster.txt"
 		},
