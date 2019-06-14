@@ -1,0 +1,30 @@
+{
+	"name": "HDI_ADFLab",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "HDInsightOnDemand",
+		"typeProperties": {
+			"clusterType": "hadoop",
+			"clusterSize": 4,
+			"timeToLive": "00:05:00",
+			"version": "3.6",
+			"hostSubscriptionId": "220ab113-94bf-4ba9-8f83-2e0e63c0b8c1",
+			"clusterResourceGroup": "adflab-test",
+			"servicePrincipalId": "7795caf5-ae67-4b19-b012-01e486369a73",
+			"osType": "Linux",
+			"tenant": "f32b97f0-efb8-4bc3-91ee-18a6e5f635c9",
+			"clusterNamePrefix": "",
+			"clusterSshUserName": "kevin",
+			"linkedServiceName": {
+				"referenceName": "AzStorage_Destination",
+				"type": "LinkedServiceReference"
+			},
+			"headNodeSize": "",
+			"dataNodeSize": "",
+			"zookeeperNodeSize": "",
+			"subnetName": "",
+			"virtualNetworkId": "",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkFERkxBQktDLUFERl8zNDBjZTc2Ni0yN2FiLTQ2Y2YtYmFhZS01NGE3OTlhMDY2MGUiDQp9"
+		}
+	}
+}
