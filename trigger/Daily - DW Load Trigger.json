@@ -17,12 +17,12 @@
 		"typeProperties": {
 			"recurrence": {
 				"frequency": "Day",
-				"interval": 3,
+				"interval": 1,
 				"startTime": "2019-06-14T18:53:00.000Z",
 				"timeZone": "UTC",
 				"schedule": {
 					"minutes": [
-						30
+						5
 					],
 					"hours": [
 						19
