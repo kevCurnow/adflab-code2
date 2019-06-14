@@ -1,0 +1,241 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "adflabkc-adf"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Blob to Blob')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Azure Blob to Azure Blob",
+						"type": "Copy",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "BlobSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"columnMappings": {
+									"N-Number": "N-Number",
+									"Serial Number": "Serial Number",
+									"MFR MDL Code": "MFR MDL Code",
+									"Eng MFR Code": "Eng MFR Code",
+									"Year MFR": "Year MFR",
+									"Type Registrant": "Type Registrant",
+									"Name": "Name",
+									"Street 1": "Street 1",
+									"Street2": "Street2",
+									"City": "City",
+									"State": "State",
+									"ZIP": "ZIP",
+									"Region": "Region",
+									"County ": "County ",
+									"Country": "Country",
+									"Last Activity Date": "Last Activity Date",
+									"Cert Issue Date": "Cert Issue Date",
+									"Certification Requested ": "Certification Requested ",
+									"Type Aircraft": "Type Aircraft",
+									"Type Engine": "Type Engine",
+									"Status Code": "Status Code",
+									"Mode S Code": "Mode S Code",
+									"Fractional  Ownership": "Fractional  Ownership",
+									"Airworthiness Date": "Airworthiness Date",
+									"Other Name 1": "Other Name 1",
+									"Other Name 2": "Other Name 2",
+									"Other Name 3": "Other Name 3",
+									"Other Name 4": "Other Name 4",
+									"Other Name 5": "Other Name 5",
+									"Expiration Date": "Expiration Date",
+									"Unique ID": "Unique ID",
+									"Kit MFR Code": "Kit MFR Code",
+									"Kit Model": "Kit Model",
+									"Mose S Code Hex": "Mose S Code Hex"
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Blob Master FAA File",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Blob Destination Master FAA File",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Send Success Email",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Azure Blob to Azure Blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"body": {
+								"dataFactoryName": "@{pipeline().DataFactory}",
+								"successtype": "Succeeded",
+								"message": "@{activity('Azure Blob to Azure Blob').output.dataWritten}",
+								"pipelineName": "@{pipeline().Pipeline}",
+								"recipient": "@{pipeline().parameters.recipient}"
+							}
+						}
+					},
+					{
+						"name": "Send Failure Email",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Azure Blob to Azure Blob",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"body": {
+								"dataFactoryName": "@{pipeline().DataFactory}",
+								"successtype": "Failed",
+								"message": "@{activity('Azure Blob to Azure Blob').error.message}",
+								"pipelineName": "@{pipeline().Pipeline}",
+								"recipient": "@{pipeline().parameters.recipient}"
+							}
+						}
+					},
+					{
+						"name": "Execute Weather to Blob Copy",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Send Success Email",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Weather to Blob Copy",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true
+						}
+					},
+					{
+						"name": "Exec Merge FAA Files",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute Weather to Blob Copy",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Merge FAA Files",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true
+						}
+					}
+				],
+				"parameters": {
+					"recipient": {
+						"type": "string",
+						"defaultValue": "Kevin.Curnow@appliedis.com"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Merge FAA Files')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Merge FAA Files')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Run FAA Hive Merge",
+						"type": "HDInsightHive",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"scriptPath": "input/FAAMerge.hql",
+							"scriptLinkedService": {
+								"referenceName": "AzStorage_Destination",
+								"type": "LinkedServiceReference"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "HDI_ADFLab",
+							"type": "LinkedServiceReference"
+						}
+					}
+				]
+			}
+		}
+	]
+}

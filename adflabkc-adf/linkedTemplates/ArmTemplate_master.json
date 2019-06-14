@@ -15,13 +15,25 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Azure DW DB'"
 		},
+		"Azure ODS DB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Azure ODS DB'"
+		},
 		"AzureBlobStorage_Source_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_Source'"
 		},
-		"Azure ODS DB_connectionString": {
+		"HDI_ADFLab_clusterPassword": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Azure ODS DB'"
+			"metadata": "Secure string for 'clusterPassword' of 'HDI_ADFLab'"
+		},
+		"HDI_ADFLab_clusterSshPassword": {
+			"type": "secureString",
+			"metadata": "Secure string for 'clusterSshPassword' of 'HDI_ADFLab'"
+		},
+		"HDI_ADFLab_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'HDI_ADFLab'"
 		},
 		"Blob Destination Master FAA File_properties_typeProperties_fileName": {
 			"type": "string",
@@ -42,6 +54,26 @@
 		"HTTP_Weather_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
+		},
+		"HDI_ADFLab_properties_typeProperties_hostSubscriptionId": {
+			"type": "string",
+			"defaultValue": "220ab113-94bf-4ba9-8f83-2e0e63c0b8c1"
+		},
+		"HDI_ADFLab_properties_typeProperties_clusterResourceGroup": {
+			"type": "string",
+			"defaultValue": "adflab-test"
+		},
+		"HDI_ADFLab_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "7795caf5-ae67-4b19-b012-01e486369a73"
+		},
+		"HDI_ADFLab_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "f32b97f0-efb8-4bc3-91ee-18a6e5f635c9"
+		},
+		"HDI_ADFLab_properties_typeProperties_clusterSshUserName": {
+			"type": "string",
+			"defaultValue": "kevin"
 		},
 		"containerUri": {
 			"type": "string",
@@ -76,11 +108,20 @@
 					"Azure DW DB_connectionString": {
 						"value": "[parameters('Azure DW DB_connectionString')]"
 					},
+					"Azure ODS DB_connectionString": {
+						"value": "[parameters('Azure ODS DB_connectionString')]"
+					},
 					"AzureBlobStorage_Source_connectionString": {
 						"value": "[parameters('AzureBlobStorage_Source_connectionString')]"
 					},
-					"Azure ODS DB_connectionString": {
-						"value": "[parameters('Azure ODS DB_connectionString')]"
+					"HDI_ADFLab_clusterPassword": {
+						"value": "[parameters('HDI_ADFLab_clusterPassword')]"
+					},
+					"HDI_ADFLab_clusterSshPassword": {
+						"value": "[parameters('HDI_ADFLab_clusterSshPassword')]"
+					},
+					"HDI_ADFLab_servicePrincipalKey": {
+						"value": "[parameters('HDI_ADFLab_servicePrincipalKey')]"
 					},
 					"HTTP_Weather_properties_typeProperties_url": {
 						"value": "[parameters('HTTP_Weather_properties_typeProperties_url')]"
@@ -96,6 +137,21 @@
 					},
 					"Blob Master FAA File_properties_typeProperties_folderPath": {
 						"value": "[parameters('Blob Master FAA File_properties_typeProperties_folderPath')]"
+					},
+					"HDI_ADFLab_properties_typeProperties_hostSubscriptionId": {
+						"value": "[parameters('HDI_ADFLab_properties_typeProperties_hostSubscriptionId')]"
+					},
+					"HDI_ADFLab_properties_typeProperties_clusterResourceGroup": {
+						"value": "[parameters('HDI_ADFLab_properties_typeProperties_clusterResourceGroup')]"
+					},
+					"HDI_ADFLab_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('HDI_ADFLab_properties_typeProperties_servicePrincipalId')]"
+					},
+					"HDI_ADFLab_properties_typeProperties_tenant": {
+						"value": "[parameters('HDI_ADFLab_properties_typeProperties_tenant')]"
+					},
+					"HDI_ADFLab_properties_typeProperties_clusterSshUserName": {
+						"value": "[parameters('HDI_ADFLab_properties_typeProperties_clusterSshUserName')]"
 					}
 				}
 			},
