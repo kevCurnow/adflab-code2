@@ -737,6 +737,14 @@
 			{
 				"name": "Blob Weather to DW",
 				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "DW Truncate Staging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
