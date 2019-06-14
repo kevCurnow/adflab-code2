@@ -18,7 +18,7 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 3,
-				"startTime": "2019-06-14T18:50:00.000Z",
+				"startTime": "2019-06-14T18:53:00.000Z",
 				"timeZone": "UTC",
 				"schedule": {
 					"minutes": [
