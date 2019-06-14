@@ -2,17 +2,6 @@
 	"name": "Daily - DW Load Trigger",
 	"properties": {
 		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "Master - Begin DW Load",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"recipient": "Kevin.Curnow@appliedis.com"
-				}
-			}
-		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
