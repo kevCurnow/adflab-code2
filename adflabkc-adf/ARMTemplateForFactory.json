@@ -74,6 +74,10 @@
 		"HTTP_Weather_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
+		},
+		"Daily - DW Load Trigger_properties_Master - Begin DW Load_parameters_recipient": {
+			"type": "string",
+			"defaultValue": "Kevin.Curnow@appliedis.com"
 		}
 	},
 	"variables": {
@@ -81,7 +85,7 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/Blob to Blob')]",
+			"name": "[concat(parameters('factoryName'), '/Master - Begin DW Load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2622,6 +2626,46 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Azure DW DB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Daily - DW Load Trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Master - Begin DW Load",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"recipient": "[parameters('Daily - DW Load Trigger_properties_Master - Begin DW Load_parameters_recipient')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 3,
+						"startTime": "2019-06-14T18:53:00.000Z",
+						"timeZone": "UTC",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								19
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Master - Begin DW Load')]"
 			]
 		}
 	]

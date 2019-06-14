@@ -75,6 +75,10 @@
 			"type": "string",
 			"defaultValue": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
 		},
+		"Daily - DW Load Trigger_properties_Master - Begin DW Load_parameters_recipient": {
+			"type": "string",
+			"defaultValue": "Kevin.Curnow@appliedis.com"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -170,6 +174,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"Daily - DW Load Trigger_properties_Master - Begin DW Load_parameters_recipient": {
+						"value": "[parameters('Daily - DW Load Trigger_properties_Master - Begin DW Load_parameters_recipient')]"
 					}
 				}
 			},
