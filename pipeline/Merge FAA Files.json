@@ -13,7 +13,15 @@
 					"secureInput": false
 				},
 				"typeProperties": {
-					"scriptPath": ""
+					"scriptPath": "input/FAAMerge.hql",
+					"scriptLinkedService": {
+						"referenceName": "AzStorage_Destination",
+						"type": "LinkedServiceReference"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "HDI_ADFLab",
+					"type": "LinkedServiceReference"
 				}
 			}
 		]
