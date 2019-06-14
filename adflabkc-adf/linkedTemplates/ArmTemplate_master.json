@@ -51,10 +51,6 @@
 			"type": "string",
 			"defaultValue": "input"
 		},
-		"HTTP_Weather_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
-		},
 		"HDI_ADFLab_properties_typeProperties_hostSubscriptionId": {
 			"type": "string",
 			"defaultValue": "220ab113-94bf-4ba9-8f83-2e0e63c0b8c1"
@@ -74,6 +70,10 @@
 		"HDI_ADFLab_properties_typeProperties_clusterSshUserName": {
 			"type": "string",
 			"defaultValue": "kevin"
+		},
+		"HTTP_Weather_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
 		},
 		"containerUri": {
 			"type": "string",
@@ -156,6 +156,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+			]
 		}
 	]
 }

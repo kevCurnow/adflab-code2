@@ -1141,6 +1141,160 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/FAA_Merge')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzStorage_Destination",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "000000_0",
+						"folderPath": "FAAMerge",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "N_Number",
+						"type": "String"
+					},
+					{
+						"name": "Serial_Number",
+						"type": "String"
+					},
+					{
+						"name": "Year_MFR",
+						"type": "String"
+					},
+					{
+						"name": "MFR_Name",
+						"type": "String"
+					},
+					{
+						"name": "Model_Name",
+						"type": "String"
+					},
+					{
+						"name": "Number_Engines",
+						"type": "String"
+					},
+					{
+						"name": "Number_Seats",
+						"type": "String"
+					},
+					{
+						"name": "0",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzStorage_Destination')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DW_Staging_Aircraft')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Azure DW DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "N-Number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Serial Number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Year MFR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MFR-NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MODEL-NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NUMBER-ENGINES",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NUMBER-SEATS",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[Staging].[DimAircraft]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Azure DW DB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DW_Staging_Weather')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Azure DW DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "_id",
+						"type": "varchar"
+					},
+					{
+						"name": "weatherDate",
+						"type": "varchar"
+					},
+					{
+						"name": "weatherDateInt",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "airportCode",
+						"type": "varchar"
+					},
+					{
+						"name": "temperatureF",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[Staging].[Weather]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Azure DW DB')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Load Data Warehouse')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1211,18 +1365,22 @@
 								"mappings": [
 									{
 										"source": {
-											"name": "Code(int32)"
+											"name": "Code",
+											"type": "Int32"
 										},
 										"sink": {
-											"name": "Code(int32)"
+											"name": "Code",
+											"type": "Int32"
 										}
 									},
 									{
 										"source": {
-											"name": "Airline_Code(String)"
+											"name": "Airline_Code",
+											"type": "String"
 										},
 										"sink": {
-											"name": "Airline_Code(String)"
+											"name": "Airline_Code",
+											"type": "String"
 										}
 									}
 								]
@@ -1754,6 +1912,338 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Blob FAA to DW",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "DW Truncate Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSetting"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSetting"
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowPolyBase": true,
+								"polyBaseSettings": {
+									"rejectValue": 0,
+									"rejectType": "value",
+									"useTypeDefault": true
+								}
+							},
+							"enableStaging": true,
+							"stagingSettings": {
+								"linkedServiceName": {
+									"referenceName": "AzStorage_Destination",
+									"type": "LinkedServiceReference"
+								},
+								"path": "output"
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "N_Number",
+											"type": "String"
+										},
+										"sink": {
+											"name": "N-Number",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Serial_Number",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Serial Number",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Year_MFR",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Year MFR",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MFR_Name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MFR-NAME",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Model_Name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MODEL-NAME",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Number_Engines",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NUMBER-ENGINES",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Number_Seats",
+											"type": "String"
+										},
+										"sink": {
+											"name": "NUMBER-SEATS",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "FAA_Merge",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DW_Staging_Aircraft",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Blob Weather to DW",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "DW Truncate Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSetting"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSetting"
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowPolyBase": true,
+								"polyBaseSettings": {
+									"rejectValue": 0,
+									"rejectType": "value",
+									"useTypeDefault": true
+								}
+							},
+							"enableStaging": true,
+							"stagingSettings": {
+								"linkedServiceName": {
+									"referenceName": "AzStorage_Destination",
+									"type": "LinkedServiceReference"
+								},
+								"path": "output"
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "_id",
+											"type": "String"
+										},
+										"sink": {
+											"name": "_id",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "date",
+											"type": "String"
+										},
+										"sink": {
+											"name": "weatherDate",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "dateint",
+											"type": "String"
+										},
+										"sink": {
+											"name": "weatherDateInt",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "airport",
+											"type": "String"
+										},
+										"sink": {
+											"name": "airportCode",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "temp",
+											"type": "String"
+										},
+										"sink": {
+											"name": "temperatureF",
+											"type": "Int32"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DestinationDataset_bhz",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DW_Staging_Weather",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "DW Load Dimensions",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "ODS Airline to DW",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "ODS Airport to DW",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "ODS Flight to DW",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Blob FAA to DW",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Blob Weather to DW",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LoadDimensions]"
+						},
+						"linkedServiceName": {
+							"referenceName": "Azure DW DB",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "DW Load Fact",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "DW Load Dimensions",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_LoadFact]"
+						},
+						"linkedServiceName": {
+							"referenceName": "Azure DW DB",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"annotations": []
@@ -1766,368 +2256,11 @@
 				"[concat(variables('factoryId'), '/datasets/DW_Staging_Airport')]",
 				"[concat(variables('factoryId'), '/datasets/ODS_Flight')]",
 				"[concat(variables('factoryId'), '/datasets/DW_Staging_Flight')]",
+				"[concat(variables('factoryId'), '/datasets/FAA_Merge')]",
+				"[concat(variables('factoryId'), '/datasets/DW_Staging_Aircraft')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_bhz')]",
+				"[concat(variables('factoryId'), '/datasets/DW_Staging_Weather')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzStorage_Destination')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Merge FAA Files')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Run FAA Hive Merge",
-						"type": "HDInsightHive",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"scriptPath": "input/FAAMerge.hql",
-							"scriptLinkedService": {
-								"referenceName": "AzStorage_Destination",
-								"type": "LinkedServiceReference"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "HDI_ADFLab",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/HDI_ADFLab')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzStorage_Destination')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Weather to Blob Copy')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_bhz",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Destination",
-								"value": "/"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "HttpSource",
-								"httpRequestTimeout": "00:01:40"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSetting",
-									"copyBehavior": "MergeFiles"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSetting",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "_id"
-										},
-										"sink": {
-											"name": "_id",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "date"
-										},
-										"sink": {
-											"name": "date",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "dateint"
-										},
-										"sink": {
-											"name": "dateint",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "airport"
-										},
-										"sink": {
-											"name": "airport",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "temp"
-										},
-										"sink": {
-											"name": "temp",
-											"type": "String"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SourceDataset_bhz",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DestinationDataset_bhz",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SourceDataset_bhz')]",
-				"[concat(variables('factoryId'), '/datasets/DestinationDataset_bhz')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Blob to Blob')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Azure Blob to Azure Blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BlobSource",
-								"recursive": true
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"columnMappings": {
-									"N-Number": "N-Number",
-									"Serial Number": "Serial Number",
-									"MFR MDL Code": "MFR MDL Code",
-									"Eng MFR Code": "Eng MFR Code",
-									"Year MFR": "Year MFR",
-									"Type Registrant": "Type Registrant",
-									"Name": "Name",
-									"Street 1": "Street 1",
-									"Street2": "Street2",
-									"City": "City",
-									"State": "State",
-									"ZIP": "ZIP",
-									"Region": "Region",
-									"County ": "County ",
-									"Country": "Country",
-									"Last Activity Date": "Last Activity Date",
-									"Cert Issue Date": "Cert Issue Date",
-									"Certification Requested ": "Certification Requested ",
-									"Type Aircraft": "Type Aircraft",
-									"Type Engine": "Type Engine",
-									"Status Code": "Status Code",
-									"Mode S Code": "Mode S Code",
-									"Fractional  Ownership": "Fractional  Ownership",
-									"Airworthiness Date": "Airworthiness Date",
-									"Other Name 1": "Other Name 1",
-									"Other Name 2": "Other Name 2",
-									"Other Name 3": "Other Name 3",
-									"Other Name 4": "Other Name 4",
-									"Other Name 5": "Other Name 5",
-									"Expiration Date": "Expiration Date",
-									"Unique ID": "Unique ID",
-									"Kit MFR Code": "Kit MFR Code",
-									"Kit Model": "Kit Model",
-									"Mose S Code Hex": "Mose S Code Hex"
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "Blob Master FAA File",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Blob Destination Master FAA File",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Send Success Email",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "Azure Blob to Azure Blob",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9",
-							"method": "POST",
-							"headers": {
-								"Content-Type": "application/json"
-							},
-							"body": {
-								"dataFactoryName": "@{pipeline().DataFactory}",
-								"successtype": "Succeeded",
-								"message": "@{activity('Azure Blob to Azure Blob').output.dataWritten}",
-								"pipelineName": "@{pipeline().Pipeline}",
-								"recipient": "@{pipeline().parameters.recipient}"
-							}
-						}
-					},
-					{
-						"name": "Send Failure Email",
-						"type": "WebActivity",
-						"dependsOn": [
-							{
-								"activity": "Azure Blob to Azure Blob",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9",
-							"method": "POST",
-							"headers": {
-								"Content-Type": "application/json"
-							},
-							"body": {
-								"dataFactoryName": "@{pipeline().DataFactory}",
-								"successtype": "Failed",
-								"message": "@{activity('Azure Blob to Azure Blob').error.message}",
-								"pipelineName": "@{pipeline().Pipeline}",
-								"recipient": "@{pipeline().parameters.recipient}"
-							}
-						}
-					},
-					{
-						"name": "Execute Weather to Blob Copy",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Send Success Email",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Weather to Blob Copy",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "Exec Merge FAA Files",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Execute Weather to Blob Copy",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Merge FAA Files",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"parameters": {
-					"recipient": {
-						"type": "string",
-						"defaultValue": "Kevin.Curnow@appliedis.com"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Blob Master FAA File')]",
-				"[concat(variables('factoryId'), '/datasets/Blob Destination Master FAA File')]",
-				"[concat(variables('factoryId'), '/pipelines/Weather to Blob Copy')]",
-				"[concat(variables('factoryId'), '/pipelines/Merge FAA Files')]"
 			]
 		}
 	]

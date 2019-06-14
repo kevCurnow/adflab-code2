@@ -38,9 +38,6 @@
 		"Blob Master FAA File_properties_typeProperties_folderPath": {
 			"value": "input"
 		},
-		"HTTP_Weather_properties_typeProperties_url": {
-			"value": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
-		},
 		"HDI_ADFLab_properties_typeProperties_hostSubscriptionId": {
 			"value": "220ab113-94bf-4ba9-8f83-2e0e63c0b8c1"
 		},
@@ -55,6 +52,9 @@
 		},
 		"HDI_ADFLab_properties_typeProperties_clusterSshUserName": {
 			"value": "kevin"
+		},
+		"HTTP_Weather_properties_typeProperties_url": {
+			"value": "https://weather-b362.restdb.io/rest/random-weather-dec-2016"
 		}
 	}
 }
