@@ -186,7 +186,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9",
+							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BnyVj0wa74DeTpAe6ROwxAmTT8kd-sLvofj08CgWM8A",
 							"method": "POST",
 							"headers": {
 								"Content-Type": "application/json"
@@ -220,7 +220,7 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9",
+							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BnyVj0wa74DeTpAe6ROwxAmTT8kd-sLvofj08CgWM8A",
 							"method": "POST",
 							"headers": {
 								"Content-Type": "application/json"
@@ -2655,10 +2655,10 @@
 						"timeZone": "UTC",
 						"schedule": {
 							"minutes": [
-								0
+								45
 							],
 							"hours": [
-								16
+								17
 							]
 						}
 					}

@@ -6,163 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory Name",
 			"defaultValue": "adflabkc-adf"
-		},
-		"Daily - DW Load Trigger_properties_Master - Begin DW Load_parameters_recipient": {
-			"type": "string",
-			"defaultValue": "Kevin.Curnow@appliedis.com"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/Merge FAA Files')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Run FAA Hive Merge",
-						"type": "HDInsightHive",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"scriptPath": "input/FAAMerge.hql",
-							"scriptLinkedService": {
-								"referenceName": "AzStorage_Destination",
-								"type": "LinkedServiceReference"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "HDI_ADFLab",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Weather to Blob Copy')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_bhz",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Destination",
-								"value": "/"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "HttpSource",
-								"httpRequestTimeout": "00:01:40"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSetting",
-									"copyBehavior": "MergeFiles"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSetting",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "_id"
-										},
-										"sink": {
-											"name": "_id",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "date"
-										},
-										"sink": {
-											"name": "date",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "dateint"
-										},
-										"sink": {
-											"name": "dateint",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "airport"
-										},
-										"sink": {
-											"name": "airport",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "temp"
-										},
-										"sink": {
-											"name": "temp",
-											"type": "String"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SourceDataset_bhz",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DestinationDataset_bhz",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Master - Begin DW Load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -172,7 +21,6 @@
 					{
 						"name": "Azure Blob to Azure Blob",
 						"type": "Copy",
-						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -180,7 +28,6 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [],
 						"typeProperties": {
 							"source": {
 								"type": "BlobSource",
@@ -233,15 +80,13 @@
 						"inputs": [
 							{
 								"referenceName": "Blob Master FAA File",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "Blob Destination Master FAA File",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -263,7 +108,6 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [],
 						"typeProperties": {
 							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BnyVj0wa74DeTpAe6ROwxAmTT8kd-sLvofj08CgWM8A",
 							"method": "POST",
@@ -297,7 +141,6 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [],
 						"typeProperties": {
 							"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=BnyVj0wa74DeTpAe6ROwxAmTT8kd-sLvofj08CgWM8A",
 							"method": "POST",
@@ -324,14 +167,12 @@
 								]
 							}
 						],
-						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
 								"referenceName": "Weather to Blob Copy",
 								"type": "PipelineReference"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
+							"waitOnCompletion": true
 						}
 					},
 					{
@@ -345,14 +186,12 @@
 								]
 							}
 						],
-						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
 								"referenceName": "Merge FAA Files",
 								"type": "PipelineReference"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
+							"waitOnCompletion": true
 						}
 					}
 				],
@@ -361,20 +200,14 @@
 						"type": "string",
 						"defaultValue": "Kevin.Curnow@appliedis.com"
 					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Weather to Blob Copy')]",
-				"[concat(variables('factoryId'), '/pipelines/Merge FAA Files')]"
-			]
+				}
+			}
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Daily - DW Load Trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
 				"runtimeState": "Started",
 				"pipelines": [
 					{
@@ -383,7 +216,7 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {
-							"recipient": "[parameters('Daily - DW Load Trigger_properties_Master - Begin DW Load_parameters_recipient')]"
+							"recipient": "Kevin.Curnow@appliedis.com"
 						}
 					}
 				],
