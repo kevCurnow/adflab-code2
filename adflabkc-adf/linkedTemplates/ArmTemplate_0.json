@@ -482,6 +482,55 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DW_Staging_Aircraft')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Azure DW DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "N-Number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Serial Number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Year MFR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MFR-NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MODEL-NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NUMBER-ENGINES",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NUMBER-SEATS",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[Staging].[DimAircraft]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Azure DW DB')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DW_Staging_Airline')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -737,6 +786,49 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DW_Staging_Weather')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Azure DW DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "_id",
+						"type": "varchar"
+					},
+					{
+						"name": "weatherDate",
+						"type": "varchar"
+					},
+					{
+						"name": "weatherDateInt",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "airportCode",
+						"type": "varchar"
+					},
+					{
+						"name": "temperatureF",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[Staging].[Weather]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Azure DW DB')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DestinationDataset_bhz')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -777,6 +869,68 @@
 					},
 					{
 						"name": "temp",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzStorage_Destination')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FAA_Merge')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzStorage_Destination",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "000000_0",
+						"folderPath": "FAAMerge",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "N_Number",
+						"type": "String"
+					},
+					{
+						"name": "Serial_Number",
+						"type": "String"
+					},
+					{
+						"name": "Year_MFR",
+						"type": "String"
+					},
+					{
+						"name": "MFR_Name",
+						"type": "String"
+					},
+					{
+						"name": "Model_Name",
+						"type": "String"
+					},
+					{
+						"name": "Number_Engines",
+						"type": "String"
+					},
+					{
+						"name": "Number_Seats",
+						"type": "String"
+					},
+					{
+						"name": "0",
 						"type": "String"
 					}
 				]
@@ -1141,160 +1295,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FAA_Merge')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzStorage_Destination",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "000000_0",
-						"folderPath": "FAAMerge",
-						"container": "output"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "N_Number",
-						"type": "String"
-					},
-					{
-						"name": "Serial_Number",
-						"type": "String"
-					},
-					{
-						"name": "Year_MFR",
-						"type": "String"
-					},
-					{
-						"name": "MFR_Name",
-						"type": "String"
-					},
-					{
-						"name": "Model_Name",
-						"type": "String"
-					},
-					{
-						"name": "Number_Engines",
-						"type": "String"
-					},
-					{
-						"name": "Number_Seats",
-						"type": "String"
-					},
-					{
-						"name": "0",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzStorage_Destination')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DW_Staging_Aircraft')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Azure DW DB",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlDWTable",
-				"schema": [
-					{
-						"name": "N-Number",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Serial Number",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Year MFR",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MFR-NAME",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MODEL-NAME",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NUMBER-ENGINES",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NUMBER-SEATS",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"tableName": "[[Staging].[DimAircraft]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Azure DW DB')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DW_Staging_Weather')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Azure DW DB",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlDWTable",
-				"schema": [
-					{
-						"name": "_id",
-						"type": "varchar"
-					},
-					{
-						"name": "weatherDate",
-						"type": "varchar"
-					},
-					{
-						"name": "weatherDateInt",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "airportCode",
-						"type": "varchar"
-					},
-					{
-						"name": "temperatureF",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"tableName": "[[Staging].[Weather]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Azure DW DB')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/Load Data Warehouse')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1365,22 +1365,18 @@
 								"mappings": [
 									{
 										"source": {
-											"name": "Code",
-											"type": "Int32"
+											"name": "Code(int32)"
 										},
 										"sink": {
-											"name": "Code",
-											"type": "Int32"
+											"name": "Code(int32)"
 										}
 									},
 									{
 										"source": {
-											"name": "Airline_Code",
-											"type": "String"
+											"name": "Airline_Code(String)"
 										},
 										"sink": {
-											"name": "Airline_Code",
-											"type": "String"
+											"name": "Airline_Code(String)"
 										}
 									}
 								]

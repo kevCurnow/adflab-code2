@@ -276,7 +276,9 @@
 								"message": "@{activity('Azure Blob to Azure Blob').output.dataWritten}",
 								"pipelineName": "@{pipeline().Pipeline}",
 								"recipient": "@{pipeline().parameters.recipient}"
-							}
+							},
+							"linkedServices": [],
+							"datasets": []
 						}
 					},
 					{
@@ -310,7 +312,9 @@
 								"message": "@{activity('Azure Blob to Azure Blob').error.message}",
 								"pipelineName": "@{pipeline().Pipeline}",
 								"recipient": "@{pipeline().parameters.recipient}"
-							}
+							},
+							"linkedServices": [],
+							"datasets": []
 						}
 					},
 					{
@@ -396,10 +400,10 @@
 						"timeZone": "UTC",
 						"schedule": {
 							"minutes": [
-								45
+								0
 							],
 							"hours": [
-								17
+								18
 							]
 						}
 					}
