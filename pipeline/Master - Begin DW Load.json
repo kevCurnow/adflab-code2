@@ -93,7 +93,7 @@
 					"secureInput": false
 				},
 				"typeProperties": {
-					"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9?api-version=2017-05-10",
+					"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9?api-version=2016-06-01",
 					"method": "POST",
 					"headers": {
 						"Content-Type": "application/json"
@@ -126,7 +126,7 @@
 					"secureInput": false
 				},
 				"typeProperties": {
-					"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9/?api-version=2017-05-10",
+					"url": "https://prod-26.eastus.logic.azure.com:443/workflows/e9882e2893614ed4a267d587417316f9/?api-version=2016-06-01",
 					"method": "POST",
 					"headers": {
 						"Content-Type": "application/json"
