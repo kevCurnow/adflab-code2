@@ -276,9 +276,7 @@
 								"message": "@{activity('Azure Blob to Azure Blob').output.dataWritten}",
 								"pipelineName": "@{pipeline().Pipeline}",
 								"recipient": "@{pipeline().parameters.recipient}"
-							},
-							"linkedServices": [],
-							"datasets": []
+							}
 						}
 					},
 					{
@@ -312,9 +310,7 @@
 								"message": "@{activity('Azure Blob to Azure Blob').error.message}",
 								"pipelineName": "@{pipeline().Pipeline}",
 								"recipient": "@{pipeline().parameters.recipient}"
-							},
-							"linkedServices": [],
-							"datasets": []
+							}
 						}
 					},
 					{
@@ -379,7 +375,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
